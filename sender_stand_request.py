@@ -4,11 +4,11 @@ import data
 
 
 #   Создание пользователя
-def post_new_user(userbody):
+def post_new_user(user_body):
 	#   Подставляем полный url
 	return requests.post(configuration.URL_SERVICE + configuration.CREATE_USER_PATH,
 	                     #  Тут тело
-	                     json = userbody,
+	                     json = user_body,
 	                     #  А здесь заголовки
 	                     headers = data.headers)
 
