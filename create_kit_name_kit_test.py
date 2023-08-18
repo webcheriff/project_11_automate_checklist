@@ -1,88 +1,77 @@
-import sender_stand_request
 import data
+import sender_stand_request
 
-
+#   Long variables for tests
 symbol511 = "AbcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdAbcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabC"
 symbol512 = "AbcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdAbcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcD"
-n = 0
 
-# Getting a body of product’s kit
+
+#   Getting a product’s body kit
 def get_kit_body(name):
 	current_kit_body = data.kit_body.copy()
 	current_kit_body["name"] = name
 	return current_kit_body
 
-#   Definition of positive asserts
-def positive_assert(name):
-	kit_body = get_kit_body(name)
-	kit_response = sender_stand_request.post_new_client_kit(kit_body, sender_stand_request.auth_token)
+
+#   Positive assertion
+def positive_assertion(name):
+	kit_body_positive = get_kit_body(name)
+	kit_response = sender_stand_request.post_new_client_kit(kit_body_positive, sender_stand_request.auth_token)
 	assert kit_response.json()["name"] == name
-	print(f"\nnameNewKit: {name}")
 	assert kit_response.status_code == 201
-	print(f"newKitStatusCode: {kit_response.status_code}")
 
 
-#   Definition of negative asserts
-# def negative_assert(name):
-# 	kit_body = get_kit_body(name)
-# 	response = sender_stand_request.post_new_user(kit_body)
+#   Negative assertion
+def negative_assertion(name):
+	kit_body_negative = get_kit_body(name)
+	kit_response = sender_stand_request.post_new_client_kit(kit_body_negative, sender_stand_request.auth_token)
+	assert kit_response.status_code == 400
 
 
-# Definitions of positive tests
+#   Positive tests
 def test_create_kit_1_symbol_in_name_get_success_response():
-	positive_assert("a")
+	positive_assertion("a")
 
 
 def test_create_kit_511_symbols_in_name_get_success_response():
-	positive_assert(symbol511)
+	positive_assertion(symbol511)
 
 
 def test_create_kit_english_letters_in_name_get_success_response():
-	positive_assert("QWErty")
-	
-	
-def test_create_kit_512_symbols_in_name_get_success_response():
-	positive_assert(symbol512)
+	positive_assertion("QWErty")
 
 
 def test_create_kit_russian_letters_in_name_get_success_response():
-	positive_assert("Мария")
-	
-	
+	positive_assertion("Мария")
+
+
 def test_create_kit_has_special_symbols_in_name_get_success_response():
-	positive_assert("\"№%@\",")
+	positive_assertion("\"№%@\",")
 
 
 def test_create_kit_has_space_in_name_get_success_response():
-	positive_assert("Человек и КО")
+	positive_assertion("Человек и КО")
 
 
 def test_create_kit_has_number_in_name_get_success_response():
-	positive_assert("123")
+	positive_assertion("123")
 
 
-# Definitions of negative tests
-# def test_create_kit_1_letter_in_name_get_error_response():
-# 	negative_assert_symbol("A")
-#
-#
-# def test_create_kit_16_letter_in_name_get_error_response():
-# 	negative_assert_symbol("Аааааааааааааааa")
-#
-#
-# def test_create_kit_no_name_get_error_response():
-# 	kit_body = data.kit_body.copy()
-# 	# Удаление параметра firstName из запроса
-# 	kit_body.pop("firstName")
-# 	negative_assert_no_firstname(kit_body)
-#
-#
-# def test_create_kit_empty_name_get_error_response():
-# 	kit_body = get_kit_body("")
-# 	negative_assert_no_firstname(kit_body)
-#
-#
-# def test_create_kit_number_type_name_get_error_response():
-# 	kit_body = get_kit_body(12)
-# 	response = sender_stand_request.post_new_user(kit_body)
-# 	assert response.status_code == 400
+#   Negative tests
+def test_create_kit_empty_name_get_error_response():
+	negative_assertion("")
+
+
+def test_create_kit_512_symbols_in_name_get_error_response():
+	negative_assertion(symbol512)
+
+
+def test_create_kit_no_name_get_error_response():
+	current_kit_body_negative = data.kit_body.copy()
+	#   Deleting “name” from a query
+	current_kit_body_negative.pop("name")
+	negative_assertion(current_kit_body_negative)
+
+
+def test_create_kit_numeric_type_name_get_error_response():
+	negative_assertion(123)

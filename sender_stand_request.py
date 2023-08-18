@@ -1,25 +1,22 @@
-import configuration
 import requests
+
+import configuration
 import data
 
 
-#   Создание пользователя
+#   Creating a user
 def post_new_user(user_body):
-	#   Подставляем полный url
 	return requests.post(configuration.URL_SERVICE + configuration.CREATE_USER_PATH,
-	                     #  Тут тело
 	                     json = user_body,
-	                     #  А здесь заголовки
 	                     headers = data.headers)
 
 
 response = post_new_user(data.user_body)
-#   Получение authToken из ответа и его вывод
+#   Getting an authToken from an answer and output it
 auth_token = response.json().get("authToken")
-print(f"authToken: {auth_token}")
 
 
-#   Создание набора для пользователя
+#   Creating a kit
 def post_new_client_kit(kit_body, auth_token):
 	data.headers["Authorization"] += auth_token
 	return requests.post(configuration.URL_SERVICE + configuration.CREATE_PRODUCTS_KIT_PATH,
@@ -28,6 +25,3 @@ def post_new_client_kit(kit_body, auth_token):
 
 
 response = post_new_client_kit(data.kit_body, auth_token)
-#   Вывод набора и его статуса создания
-print(f"newClientKitStatus: {response.status_code}")
-print(response.json())
